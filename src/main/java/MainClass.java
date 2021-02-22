@@ -1,4 +1,7 @@
+import com.fasterxml.jackson.core.JsonPointer;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.apache.http.HttpEntity;
 
 import org.apache.http.HttpResponse;
@@ -17,6 +20,7 @@ import org.apache.http.impl.client.HttpClients;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 
 
 public class MainClass {
@@ -41,27 +45,41 @@ public class MainClass {
 
             CloseableHttpResponse response = client.execute(httpPost);
 
-            /*HttpEntity entity = response.getEntity();
-            String responseString = EntityUtils.toString(entity, "UTF-8");
-            System.out.println(responseString);*/
-
-            //added comment
-
-            System.out.println(response.getStatusLine().getStatusCode());
+            /*System.out.println(response.getStatusLine().getStatusCode());
             System.out.println(response.getStatusLine().getProtocolVersion());
-            System.out.println(response.getStatusLine().getReasonPhrase());
+            System.out.println(response.getStatusLine().getReasonPhrase());*/
 
             String responseString = new BasicResponseHandler().handleResponse(response);
             System.out.println(responseString);
 
             // parse JSON
-/*            ObjectMapper mapper = new ObjectMapper();
-            Response res = mapper.readValue(responseString,Response.class);*/
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readTree(responseString);
 
+           Response responseCurrent=new Response(
+                   node.get("compliant").asText(),
+                   node.get("pdfaflavour").asText()
+           );
+
+            System.out.println("Compliant " + node.get("compliant").asText() +":"+node.get("pdfaflavour").asText());
+
+            ArrayNode arrayNode=(ArrayNode) node.at("/validationProfile/rules");
+
+            JsonNode arrayElement;
+            for(int i=0; i<arrayNode.size();i++){
+                arrayElement = arrayNode.get(0).at("/ruleId");
+                System.out.println(arrayElement.get("clause").asText());
+                responseCurrent.addRuleViolationClause(arrayElement.get("clause").asText());
+            }
+
+
+            System.out.println("end");
+            //Response res = mapper.readValue(responseString,Response.class);
             //podívat se do dokumentace Jackson, jaké může háze výjimky
 
 
             client.close();
+
 
         }
 }
