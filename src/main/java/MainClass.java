@@ -1,5 +1,7 @@
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import org.apache.http.HttpEntity;
 
 import org.apache.http.client.methods.*;
@@ -19,9 +21,12 @@ public class MainClass {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
+    /*public static void fcn() throws ArrayIndexOutOfBoundsException{
+        int num[] = {1, 2, 3, 4};
+        System.out.println(num[5]);
+    }*/
+
     public static void main(String[] args) throws IOException {
-
-
             //přidej výjimku, co když odpověď nedojde ve fromátu JSON
 
             String filePath="D:\\dokumenty\\Vojta\\UTB\\diplom_prace\\profiles\\veraPDF-corpus\\PDF_A-1b\\6.1 File structure\\6.1.2 File header\\veraPDF test suite 6-1-2-t01-pass-a.pdf";
@@ -47,17 +52,27 @@ public class MainClass {
 
             // parse JSON
             ObjectMapper mapper = new ObjectMapper();
-            JsonNode rootNode = mapper.readTree(responseString);
-            CustomJsonDeserializer des = new CustomJsonDeserializer(rootNode);
+            try{
+                JsonNode rootNode = mapper.readTree(responseString);
+                CustomJsonDeserializer des = new CustomJsonDeserializer(rootNode);
 
-           Response responseCurrent=new Response(
-                   des.getAttributeValueFromRoot("compliant"),
-                   des.getAttributeValueFromRoot("pdfaflavour"),
-                   des.getClauseArray()
-           );
+                Response responseCurrent=new Response(
+                        des.getAttributeValueFromRoot("compliant"),
+                        des.getAttributeValueFromRoot("pdfaflavour"),
+                        des.getClauseArray()
+                );
 
-            System.out.println("Compliant " + responseCurrent.getCompliant() +"pdfaflavour: "+responseCurrent.getPdfaflavour());
-            System.out.println("List of Clauses: " + responseCurrent.getListRuleViolationClause());
+                System.out.println("|Compliant: " + responseCurrent.getCompliant() +"|pdfaflavour: "+responseCurrent.getPdfaflavour());
+                System.out.println("List of Clauses: " + responseCurrent.getListRuleViolationClause());
+            }catch(UnrecognizedPropertyException e1){
+                System.out.println(e1.getMessage());
+            }catch(JsonMappingException e2){
+                System.out.println(e2.getMessage());
+            }
+
+
+
+
             System.out.println("end");
 
             //podívat se do dokumentace Jackson, jaké může háze výjimky

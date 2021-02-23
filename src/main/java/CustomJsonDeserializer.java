@@ -16,16 +16,25 @@ public class CustomJsonDeserializer {
     //for viewing the structure of JSON is usefull this online tool: http://jsonviewer.stack.hu/
     public List<String> getClauseArray(){
         List<String> clause = new ArrayList<String>();
-        ArrayNode arrayNode=(ArrayNode) rootNode.at("/validationProfile/rules");
-        JsonNode arrayElement;
-        for(int i=0; i<arrayNode.size();i++){
-            arrayElement = arrayNode.get(0).at("/ruleId");
-            clause.add(arrayElement.get("clause").asText());
+        try{
+            ArrayNode arrayNode=(ArrayNode) rootNode.at("/validationProfile/rules");
+            JsonNode arrayElement;
+            for(int i=0; i<arrayNode.size();i++){
+                arrayElement = arrayNode.get(i).at("/ruleId");
+                clause.add(arrayElement.get("clause").asText());
+            }
+            return clause;
+        }catch (ClassCastException e){
+            e.getMessage();
+            return clause;
         }
-        return clause;
     }
 
-    public String getAttributeValueFromRoot(String attribute){
-        return rootNode.get(attribute).asText();
+    public String getAttributeValueFromRoot (String attribute){
+        try{
+            return rootNode.get(attribute).asText();
+        }catch (NullPointerException e){
+            return "";
+        }
     }
 }
