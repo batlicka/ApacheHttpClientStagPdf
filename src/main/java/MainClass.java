@@ -1,14 +1,7 @@
-import com.fasterxml.jackson.core.JsonPointer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.apache.http.HttpEntity;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
 
 import org.apache.http.entity.ContentType;
@@ -20,7 +13,6 @@ import org.apache.http.impl.client.HttpClients;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 
 
 public class MainClass {
@@ -28,6 +20,7 @@ public class MainClass {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public static void main(String[] args) throws IOException {
+
 
             //přidej výjimku, co když odpověď nedojde ve fromátu JSON
 
@@ -54,27 +47,19 @@ public class MainClass {
 
             // parse JSON
             ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readTree(responseString);
+            JsonNode rootNode = mapper.readTree(responseString);
+            CustomJsonDeserializer des = new CustomJsonDeserializer(rootNode);
 
            Response responseCurrent=new Response(
-                   node.get("compliant").asText(),
-                   node.get("pdfaflavour").asText()
+                   des.getAttributeValueFromRoot("compliant"),
+                   des.getAttributeValueFromRoot("pdfaflavour"),
+                   des.getClauseArray()
            );
 
-            System.out.println("Compliant " + node.get("compliant").asText() +":"+node.get("pdfaflavour").asText());
-
-            ArrayNode arrayNode=(ArrayNode) node.at("/validationProfile/rules");
-
-            JsonNode arrayElement;
-            for(int i=0; i<arrayNode.size();i++){
-                arrayElement = arrayNode.get(0).at("/ruleId");
-                System.out.println(arrayElement.get("clause").asText());
-                responseCurrent.addRuleViolationClause(arrayElement.get("clause").asText());
-            }
-
-
+            System.out.println("Compliant " + responseCurrent.getCompliant() +"pdfaflavour: "+responseCurrent.getPdfaflavour());
+            System.out.println("List of Clauses: " + responseCurrent.getListRuleViolationClause());
             System.out.println("end");
-            //Response res = mapper.readValue(responseString,Response.class);
+
             //podívat se do dokumentace Jackson, jaké může háze výjimky
 
 

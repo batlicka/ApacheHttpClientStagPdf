@@ -1,21 +1,21 @@
-import java.util.ArrayList;
 import java.util.List;
 
 public class Response {
     private String compliant;
     private String pdfaflavour;
-    private List<String> ruleViolationClause = new ArrayList<String>();
+    private List<String> listRuleViolationClause;
 
     public Response() {
     }
 
-    public Response(String compliant, String pdfaflavour) {
+    public Response(String compliant, String pdfaflavour, List<String> Clause) {
         this.compliant = compliant;
         this.pdfaflavour = pdfaflavour;
+        this.listRuleViolationClause =Clause;
     }
 
-    public void addRuleViolationClause(String Clause){
-    this.ruleViolationClause.add(Clause);
+    public void setListRuleViolationClause(List<String> Clause){
+    this.listRuleViolationClause = Clause;
     }
 
     public String getCompliant() {
@@ -32,6 +32,11 @@ public class Response {
 
     public void setPdfaflavour(String pdfaflavour) {
         this.pdfaflavour = pdfaflavour;
+    }
+
+
+    public List<String> getListRuleViolationClause() {
+        return listRuleViolationClause;
     }
 
 
