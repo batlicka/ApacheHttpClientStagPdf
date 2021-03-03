@@ -71,6 +71,8 @@ public class MainClass {
                 //rest api rozhodne, jak se výjimka ošetří
                 //na zobrazování chyb použít běžné http kody a chybu specifikovat v jeho správě
 
+                String json= new ObjectMapper().writeValueAsString(customResponseCurrent);
+
                 ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.writeValue(new File("customResponseCurrent.json"),customResponseCurrent);
 

@@ -6,9 +6,9 @@ import java.util.List;
 
 public class CustomResponse {
     private String compliant;
-
+    @JsonIgnore
     private String pdfaflavour;
-
+    @JsonIgnore
     private ArrayList<String> ruleValidationExceptions;
 
     public CustomResponse() {
