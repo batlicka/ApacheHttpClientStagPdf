@@ -11,6 +11,8 @@ public class CustomResponse {
     @JsonIgnore
     private ArrayList<String> ruleValidationExceptions;
 
+    //added comment
+
     public CustomResponse() {
     }
 
