@@ -3,12 +3,10 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.apache.http.HttpEntity;
 
 import org.apache.http.client.methods.*;
 
-import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -31,23 +29,13 @@ public class MainClass {
 
     public static void main(String[] args) throws IOException {
             //přidej výjimku, co když odpověď nedojde ve fromátu JSON
-            System.out.println("Working Directory = " + System.getProperty("user.dir"));
 
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            File file = new File("RuleViolationException.json");
-            JsonNode rootNode2 = objectMapper.readTree(file);
-
-            ArrayList<String> arr= new ArrayList<String>();
-
-            ArrayNode arrayNode = (ArrayNode) rootNode2.at("/RuleViolationExceptions");
-
-            for (int i = 0; i < arrayNode.size(); i++) {
-                arr.add(arrayNode.get(i).asText());
-            }
-            ///////////////////////////
+            //this pdf passed
             String filePath="D:\\dokumenty\\Vojta\\UTB\\diplom_prace\\profiles\\veraPDF-corpus\\PDF_A-1b\\6.1 File structure\\6.1.2 File header\\veraPDF test suite 6-1-2-t01-pass-a.pdf";
             String fileName="veraPDF test suite 6-1-2-t01-pass-a.pdf";
+
+            //this pdf failed
+            String filePathFailedPdf="D:\\dokumenty\\Vojta\\UTB\\diplom_prace\\profiles\\veraPDF-corpus\\PDF_A-1b\\6.1 File structure\\6.1.2 File header\\veraPDF test suite 6-1-2-t02-fail-b.pdf";
 
             CloseableHttpClient client = HttpClients.createDefault();
             HttpPost httpPost = new HttpPost("http://pdfa.k.utb.cz:8080/api/validate/auto");//http://pdfa.k.utb.cz:8080/api/validate/auto
@@ -56,7 +44,7 @@ public class MainClass {
 
             MultipartEntityBuilder builder = MultipartEntityBuilder.create();
             //builder.addBinaryBody("file", new File(filePath), ContentType.APPLICATION_OCTET_STREAM, fileName);
-            builder.addBinaryBody("file",  new File(filePath));
+            builder.addBinaryBody("file",  new File(filePathFailedPdf));
             HttpEntity multipart = builder.build();
             httpPost.setEntity(multipart);
 
@@ -75,20 +63,23 @@ public class MainClass {
                 JsonNode rootNode = mapper.readTree(responseString);
                 CustomJsonDeserializer des = new CustomJsonDeserializer(rootNode);
 
-                Response responseCurrent=new Response(
+                CustomResponse customResponseCurrent =new CustomResponse(
                         des.getAttributeValueFromRoot("compliant"),
                         des.getAttributeValueFromRoot("pdfaflavour"),
-                        des.getClauseArray()
+                        des.getTestAssertionsArray()
                 );
                 //rest api rozhodne, jak se výjimka ošetří
                 //na zobrazování chyb použít běžné http kody a chybu specifikovat v jeho správě
 
-                System.out.println("|Compliant: " + responseCurrent.getCompliant() +"|pdfaflavour: "+responseCurrent.getPdfaflavour());
-                System.out.println("List of Clauses: " + responseCurrent.getListRuleViolationClause());
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.writeValue(new File("customResponseCurrent.json"),customResponseCurrent);
+
+
+
+                System.out.println("|Compliant: " + customResponseCurrent.getCompliant() +"|pdfaflavour: "+ customResponseCurrent.getPdfaflavour());
+                System.out.println("List of Clauses: " + customResponseCurrent.getRuleValidationExceptions());
             }catch(UnrecognizedPropertyException e1){
                 System.out.println(e1.getMessage());
-            }catch(JsonMappingException e2){
-                System.out.println(e2.getMessage());
             }catch (JsonParseException e3){
                 System.out.println("response can't be processed, because response is not in JSON format");
             }
