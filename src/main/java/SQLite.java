@@ -116,10 +116,10 @@ public class SQLite {
                 while(rs.next())
                 {
                     // read the result set
-                    System.out.print(rs.getString("sha1")+" ");
-                    System.out.print(rs.getString("verapdf_rest_response")+" ");
-                    System.out.print(rs.getInt("request_time")+" ");
-                    System.out.println(rs.getInt("verapdf_rest_request_time")+" ");
+                    System.out.print(rs.getString("sha1")+"| ");
+                    System.out.print(rs.getString("verapdf_rest_response")+"| ");
+                    System.out.print(rs.getInt("request_time")+"| ");
+                    System.out.println(rs.getInt("verapdf_rest_request_time")+"| ");
 
                 }
             }catch(SQLException e){
