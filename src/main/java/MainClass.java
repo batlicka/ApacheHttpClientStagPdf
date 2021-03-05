@@ -29,6 +29,8 @@ public class MainClass {
     }*/
 
     public static void main(String[] args) throws IOException {
+            //comment vvv
+
             //přidej výjimku, co když odpověď nedojde ve fromátu JSON
 
             //this pdf passed
@@ -86,52 +88,7 @@ public class MainClass {
                 var.insertStagpdfaLogs("ssdffsfsf","compliant:true",6,8);
                 var.insertStagpdfaLogs("aaasfsffsfsf","compliant:false",11,4);
                 var.printSQLContentOnConsole();
-                /*Connection connection = null;
-                try{
-                     connection= DriverManager.getConnection("jdbc:sqlite:sample.db");
-                    // create a database connection
 
-                    Statement statement = connection.createStatement();
-                    statement.setQueryTimeout(30);  // set timeout to 30 sec.
-
-                    statement.executeUpdate("drop table if exists stagpdfa_logs");
-                    statement.executeUpdate("drop table if exists person");
-                    statement.executeUpdate("create table stagpdfa_logs (sha1 string,  verapdf_rest_response string, request_time integer, verapdf_rest_request_time integer)");
-                    statement.executeUpdate("create table person (id integer, name string)");
-                    String varV="Babis";
-                    Integer num= 89;
-                    statement.executeUpdate(String.format("insert into person values(%d, '%s')",77,varV));
-                    statement.executeUpdate("insert into person values(55, 'vojta')");
-                    //https://stackoverflow.com/questions/17207088/how-to-use-java-variable-to-insert-values-to-mysql-table
-                    PreparedStatement pstmt = connection.prepareStatement("INSERT INTO `person`(id, name) VALUES (?, ?)");
-                    pstmt.setInt(1, num );
-                    pstmt.setString(2, varV );
-                    pstmt.executeUpdate();
-
-                    ResultSet rs = statement.executeQuery("select * from person");
-                    while(rs.next())
-                    {
-                        // read the result set
-                        System.out.println("name = " + rs.getString("name"));
-                        System.out.println("id = " + rs.getInt("id"));
-                    }
-                }catch(SQLException sql){
-                    System.err.println(sql.getMessage());
-                }finally
-                {
-                    try
-                    {
-                        if(connection != null)
-                            connection.close();
-
-
-                    }
-                    catch(SQLException e)
-                    {
-                        // connection close failed.
-                        System.err.println(e.getMessage());
-                    }
-                }*/
             }catch(UnrecognizedPropertyException e1){
                 System.out.println(e1.getMessage());
             }catch (JsonParseException e3){
