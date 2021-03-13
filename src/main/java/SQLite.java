@@ -1,4 +1,6 @@
 import java.sql.*;
+import java.time.Duration;
+import java.time.Instant;
 
 public class SQLite {
 
@@ -104,6 +106,7 @@ public class SQLite {
         ///https://shinesolutions.com/2007/08/04/how-to-close-jdbc-resources-properly-every-time/
         Connection connection=null;
         try{
+
             connection= DriverManager.getConnection("jdbc:sqlite:sample.db");
             Statement statement =null;
             // create a database connection
@@ -120,8 +123,8 @@ public class SQLite {
                     System.out.print(rs.getString("verapdf_rest_response")+"| ");
                     System.out.print(rs.getInt("request_time")+"| ");
                     System.out.println(rs.getInt("verapdf_rest_request_time")+"| ");
-
                 }
+
             }catch(SQLException e){
                 System.err.println(e.getMessage());
             }finally {
