@@ -34,17 +34,17 @@ public class MainClass {
 
     public static void main(String[] args) throws IOException {
         Stopwatch stopwatch = Stopwatch.createStarted();
-        StopWatch stopwatchLang3 = new StopWatch();
-        stopwatchLang3.start();;
+        StopWatch stopwatchLang3 = StopWatch.createStarted();
+
                 SQLite var=new SQLite();
-                var.insertStagpdfaLogs("ssdffsfsf","compliant:true",6,8);
-                var.insertStagpdfaLogs("aaasfsffsfsf","compliant:false",11,4);
+                var.insertStagpdfaLogs("ssdffsfsf","compliant:true",(int)6.0,8);
+                var.insertStagpdfaLogs("aaasfsffsfsf","compliant:false",(int)11.0,4);
                 var.printSQLContentOnConsole();
         stopwatchLang3.stop();
         stopwatch.stop();
         long millis = stopwatch.elapsed(TimeUnit.SECONDS);
         System.out.println("that took: " + stopwatch);
-        System.out.println("time from stopwatchLang3: " + stopwatchLang3.getTime(TimeUnit.MILLISECONDS)/1000.0);
+        System.out.println("time from stopwatchLang3: " + stopwatchLang3.getTime(TimeUnit.SECONDS));
 
     }
 }
